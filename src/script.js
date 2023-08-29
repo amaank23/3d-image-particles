@@ -29,37 +29,30 @@ const textureLoader = new THREE.TextureLoader()
 const loader = new THREE.ImageLoader();
 loader.load("/img.jpg", (image) => {
         const canvas = document.createElement( 'canvas' );
+        canvas.width = 500
+        canvas.height = 281
 		const context = canvas.getContext( '2d' );
 		context.drawImage(image, 0, 0);
-        const imageData = context.getImageData(0, 0, window.innerWidth, window.innerHeight)
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
         const particlesGeometry = new THREE.BufferGeometry()
         const particlesMaterial = new THREE.PointsMaterial({
             size: 0.02,
         })
 
-        const positions = new Float32Array(84300)
-        const colors = new Float32Array(84300)
+        const positions = new Float32Array((canvas.width * canvas.height) * 3)
+        const colors = new Float32Array((canvas.width * canvas.height) * 3)
 
-        // positions[0] = 0
-        // positions[1] = 0
-        // positions[2] = 0
-        // colors[0] = imageData.data[0] * (1 / 256)
-        // colors[1] = imageData.data[1] * (1 / 256)
-        // colors[2] = imageData.data[2] * (1 / 256)
-
-
-
-        for(let y = 0; y < window.innerHeight; y += 5){
-            for(let x = 0; x < window.innerWidth; x+= 5){
-              const index = (y * window.innerWidth + x) * 4;
-              const index1 = x + y * 3;
+        for(let y = 0; y < canvas.height; y += 1){
+            for(let x = 0; x < canvas.width; x+= 1){
+              const index = (y * canvas.width + x) * 4;
+              const index1 = (y * canvas.width + x) * 3;
               const red = imageData.data[index]
               const green = imageData.data[index + 1]
               const blue = imageData.data[index + 2]
               const alpha = imageData.data[index + 3]
               if(alpha > 0){
-                positions[index1] = x
-                positions[index1+1] = y
+                positions[index1] = x * 0.01
+                positions[index1+1] = -(y * 0.01)
                 positions[index1+2] = 0
                 colors[index1] = red * (1 / 256)
                 colors[index1+1] = green * (1 / 256)
@@ -67,11 +60,11 @@ loader.load("/img.jpg", (image) => {
               }
             }
            }
-           console.log(positions);
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
         particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
         particlesMaterial.vertexColors = true
         const particles = new THREE.Points(particlesGeometry, particlesMaterial)
+        console.log(particles);
         scene.add(particles)
 })
 
