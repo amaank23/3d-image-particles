@@ -64,7 +64,6 @@ loader.load("/img.jpg", (image) => {
         particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
         particlesMaterial.vertexColors = true
         const particles = new THREE.Points(particlesGeometry, particlesMaterial)
-        console.log(particles);
         scene.add(particles)
 })
 
